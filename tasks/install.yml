@@ -3,9 +3,9 @@
 - name: Download the Golang tarball
   become: yes
   get_url:
-    url: "{{ golang.base_url }}{{ golang.tarball }}"
-    dest: "/usr/local/src/{{ golang.tarball }}"
-    sha256sum: "{{ golang.tarball_checksum }}"
+    url: "{{ golang_base_url }}{{ golang_tarball }}"
+    dest: "/usr/local/src/{{ golang_tarball }}"
+    sha256sum: "{{ golang_tarball_checksum }}"
     force: no
     validate_certs: no
 
@@ -14,33 +14,33 @@
   unarchive:
     copy: no
     dest: /usr/local
-    src: "/usr/local/src/{{ golang.tarball }}"
+    src: "/usr/local/src/{{ golang_tarball }}"
 
 - name: Create Golang code folders for workspace user
   become: yes
   file:
-    group: "{{ golang.workspace_user }}"
+    group: "{{ golang_workspace_user }}"
     name: "{{ item }}"
-    owner: "{{ golang.workspace_user }}"
+    owner: "{{ golang_workspace_user }}"
     state: directory
   with_items:
-    - "/home/{{ golang.workspace_user }}/go"
-    - "/home/{{ golang.workspace_user }}/go/bin"
-    - "/home/{{ golang.workspace_user }}/go/pkg"
-    - "/home/{{ golang.workspace_user }}/go/src/"
-    - "/home/{{ golang.workspace_user }}/go/src/github.com"
-  when: golang.workspace_user
+    - "/home/{{ golang_workspace_user }}/go"
+    - "/home/{{ golang_workspace_user }}/go/bin"
+    - "/home/{{ golang_workspace_user }}/go/pkg"
+    - "/home/{{ golang_workspace_user }}/go/src/"
+    - "/home/{{ golang_workspace_user }}/go/src/github.com"
+  when: golang_workspace_user
 
 - name: Add Golang environment variables to .bashrc for workspace user
   become : yes
-  become_user: "{{ golang.workspace_user }}"
+  become_user: "{{ golang_workspace_user }}"
   lineinfile:
     create: yes
-    dest: "/home/{{ golang.workspace_user }}/.bashrc"
+    dest: "/home/{{ golang_workspace_user }}/.bashrc"
     insertafter: EOF
     line: "{{ item }}"
   with_items:
-    - "export GOPATH=/home/{{ golang.workspace_user }}/go"
+    - "export GOPATH=/home/{{ golang_workspace_user }}/go"
     - "export PATH=$GOPATH/bin:$PATH"
     - "export PATH=$PATH:/usr/local/go/bin"
-  when: golang.workspace_user
+  when: golang_workspace_user
